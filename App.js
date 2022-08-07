@@ -16,6 +16,10 @@ export default class App extends React.Component {
 		};
 	}
 
+	alertUnavail(word) {
+		alert("The word: " + word + " does not exist in our database");
+	}
+
 	render() {
 		return (
 			<SafeAreaProvider>
@@ -31,11 +35,13 @@ export default class App extends React.Component {
 						value={this.state.word}
 					/>
 					<TouchableOpacity style={styles.goBtn} onPress={() => {
-						this.setState({
-							chunks: DB[this.state.word].chunks,
-							phonicSounds: DB[this.state.word].phones
-						});
-						console.log(this.state.chunks, DB[this.state.word].chunks);
+						const word = DB[this.state.word.toLowerCase().trim()]
+						word ?
+							this.setState({
+								chunks: word.chunks,
+								phonicSounds: word.phones
+							}) :
+							this.alertUnavail(this.state.word)
 					}}>
 						<Text style={{ textAlign: "center" }}>
 							Go
@@ -45,13 +51,14 @@ export default class App extends React.Component {
 						{
 							this.state.chunks.map((item, index) => {
 								return (
-									<PhonicSoundBtn wordChunk={this.state.chunks[index] } soundChunk={this.state.phonicSounds[index]}/>
+									<PhonicSoundBtn wordChunk={this.state.chunks[index]} soundChunk={this.state.phonicSounds[index]}
+										btnIndex={index} />
 								)
 							})
 						}
 					</View>
 				</View>
-			</SafeAreaProvider>
+			</SafeAreaProvider >
 		);
 	}
 }
@@ -77,15 +84,5 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		marginTop: "20%",
 		backgroundColor: "lightgreen"
-	},
-	chunkButton: {
-		width: '60%',
-		height: 50,
-		justifyContent: 'center',
-		alignItems: 'center',
-		alignSelf: 'center',
-		borderRadius: 10,
-		margin: 5,
-		backgroundColor: 'red'
 	}
 });
